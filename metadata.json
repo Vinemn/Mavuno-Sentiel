@@ -1,0 +1,8 @@
+{
+  "name": "Mavuno Sentinel",
+  "description": "A mobile-first, multilingual, offline-capable web application for Pan-African closed-loop pest & disease management for smallholder farmers. It features AI-powered diagnosis, supply chain matching, and community alerts.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}

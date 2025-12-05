@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mavuno Sentinel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Offset scroll position to account for the fixed header height */
+      section[id] {
+        scroll-margin-top: 4.5rem;
+      }
+      body {
+        font-family: 'Inter', sans-serif;
+      }
+      h1, h2, h3, h4, h5, h6 {
+        font-family: 'Poppins', sans-serif;
+      }
+      @keyframes spin-slow {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      .animate-spin-slow {
+        animation: spin-slow 20s linear infinite;
+      }
+      @keyframes gentle-bob {
+        0%, 100% { transform: translateY(-2%); }
+        50% { transform: translateY(2%); }
+      }
+      .animate-gentle-bob {
+        animation: gentle-bob 3s ease-in-out infinite;
+      }
+       @keyframes gentle-sway {
+        0%, 100% { transform: translateX(-5%); }
+        50% { transform: translateX(5%); }
+      }
+      .animate-gentle-sway {
+        animation: gentle-sway 3s ease-in-out infinite;
+      }
+      @keyframes fade-in-up {
+        0% {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        100% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .animate-fade-in-up {
+        animation: fade-in-up 0.5s ease-out forwards;
+      }
+      @keyframes focus-pulse {
+        0% { opacity: 1; transform: scale(0.9); }
+        100% { opacity: 0; transform: scale(1.2); }
+      }
+      .animate-focus-pulse {
+        animation: focus-pulse 0.8s ease-out forwards;
+      }
+      @keyframes camera-flip {
+        from { transform: rotateY(0deg); }
+        to { transform: rotateY(360deg); }
+      }
+      .animate-camera-flip {
+        animation: camera-flip 0.5s ease-in-out;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.24.0",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "recharts/": "https://aistudiocdn.com/recharts@^2.12.7/",
+    "recharts": "https://aistudiocdn.com/recharts@^2.12.7"
+  }
+}
+</script>
+</head>
+  <body>
+    <div id="root"></div>
+  </body>
+</html>

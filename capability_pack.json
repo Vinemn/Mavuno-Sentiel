@@ -1,0 +1,151 @@
+
+{
+  "summary": {
+    "description": "This Add-On Capability Pack extends Mavuno Sentinel with a farmer-first productivity suite designed for Kenyan smallholders. It moves beyond simple pest diagnosis to proactively manage yield, input efficiency, and market timing. By integrating localized market prices, weekly productivity reports, and actionable efficiency interventions, this pack aims to directly improve farm profitability and sustainability.",
+    "kpis": [
+      "Estimated Yield Uplift: +15% per season",
+      "Input Cost Reduction: -10% via precise application",
+      "Time Saved: 4 hours/week on scouting & market research"
+    ]
+  },
+  "features": [
+    {
+      "priority": "MUST",
+      "title": "Localized Market Price Integration",
+      "description": "Real-time crop prices for local counties (e.g., Machakos, Nakuru) to guide sell/hold decisions.",
+      "user_flow": "1. Farmer opens 'Market' tab. 2. Selects crop (Maize). 3. Views current price vs 30-day median. 4. Sees AI 'Sell' or 'Hold' recommendation.",
+      "data_required": "Daily crop prices per county (KES).",
+      "acceptance_criteria": "Displays current price for user's county. Shows trend arrow (up/down). Fallback to median price if live feed fails."
+    },
+    {
+      "priority": "HIGH",
+      "title": "Weekly Productivity Report",
+      "description": "A generated summary of farm health, potential yield, and input efficiency.",
+      "user_flow": "1. Farmer receives SMS/Notification. 2. Opens 'Reports' tab. 3. Views Yield Forecast card. 4. Checks Input Efficiency score.",
+      "data_required": "Diagnosis logs, weather data, input usage logs.",
+      "acceptance_criteria": "Generates a weekly report object. Displays Yield Forecast in tons/acre. Lists at least 3 actionable insights."
+    },
+    {
+      "priority": "HIGH",
+      "title": "Efficiency Interventions Catalog",
+      "description": "Context-aware agronomy tips to improve soil health and water retention.",
+      "user_flow": "1. Dashboard shows 'Quick Tips'. 2. Farmer clicks a tip (e.g., 'Mulch now'). 3. Views simple instruction card.",
+      "data_required": "Crop type, growth stage, weather forecast.",
+      "acceptance_criteria": "Shows 3 relevant tips based on crop. Clicking expands details."
+    }
+  ],
+  "schemas": {
+    "farmer_profile": {
+      "id": "string",
+      "name": "string",
+      "county": "string",
+      "ward": "string",
+      "primary_crop": "string",
+      "acres": "number"
+    },
+    "market_price": {
+      "crop": "string",
+      "county": "string",
+      "price": "number",
+      "currency": "string",
+      "date": "timestamp",
+      "source": "string"
+    },
+    "productivity_log": {
+      "farmer_id": "string",
+      "week_start": "date",
+      "pest_incidents": "number",
+      "inputs_used": "array",
+      "estimated_yield": "number"
+    }
+  },
+  "alert_templates": {
+    "sms_weekly_report": "Mavuno Report: Week of {date}. Yield Forecast: {yield} tons. Alert: {pest_count} pests detected. Action: {top_action}. Dial *721# for details.",
+    "app_price_alert": "Market Alert: {crop} prices in {county} are up {percent}%. Recommendation: SELL NOW.",
+    "ussd_weather_warning": "Warning: Heavy rains expected in {county} tomorrow. Delay fertilizer application to avoid runoff."
+  },
+  "price_integration": {
+    "sources": ["Ministry of Agriculture Daily Reports", "Crowdsourced Farmer Inputs"],
+    "currency": "KES",
+    "fallback_rule": "If live data > 48h old, use 30-day rolling median.",
+    "bigquery_sample": "SELECT county, crop, PERCENTILE_CONT(price, 0.5) OVER(PARTITION BY county, crop) as median_price FROM `market_data` WHERE date >= DATE_SUB(CURRENT_DATE(), INTERVAL 30 DAY)"
+  },
+  "ml_models": [
+    {
+      "name": "Yield Forecaster",
+      "purpose": "Predict harvest volume based on pest pressure and weather",
+      "inputs": ["crop_type", "pest_severity_index", "rainfall_mm", "fertilizer_kg"],
+      "eval_metric": "MAE (Mean Absolute Error) < 0.5 tons/acre",
+      "inference": "Client-side TFLite model or Cloud Function"
+    }
+  ],
+  "offline_strategy": {
+    "data_sync": "Cache market prices and last 3 reports on device. Sync background on connectivity.",
+    "fallback": "Show 'Data from {date}' banner when offline.",
+    "ussd": "Essential alerts and price checks available via USSD *721#."
+  },
+  "apis": [
+    {
+      "method": "GET",
+      "path": "/api/v1/market/prices",
+      "params": { "county": "Machakos", "crop": "Maize" },
+      "response": { "price": 4500, "trend": "up", "recommendation": "sell" }
+    },
+    {
+      "method": "GET",
+      "path": "/api/v1/reports/weekly",
+      "params": { "farmer_id": "123", "week": "current" },
+      "response": { "yield_forecast": "High", "actions": ["Weed now"] }
+    }
+  ],
+  "ux": {
+    "ussd_menu": "1. Diagnose\n2. Market Prices\n3. My Report\n4. Settings",
+    "voice_prompts": "Swahili audio for low-literacy users describing the weekly report."
+  },
+  "kpi_dashboard": {
+    "metrics": ["Adoption Rate", "Yield Change YoY", "Input Cost Savings", "Active Users (Weekly)"],
+    "tool": "Looker Studio connected to BigQuery"
+  },
+  "interventions_catalog": [
+    { "trigger": "Dry spell > 7 days", "action": "Apply mulch to retain moisture" },
+    { "trigger": "Maize @ knee height", "action": "Top-dress with CAN fertilizer" },
+    { "trigger": "Fall Armyworm detected", "action": "Spray Neem/Pyrethrin in evening" }
+  ],
+  "business_incentives": {
+    "data_value_exchange": "Farmers sharing price data get 5 free SMS alerts.",
+    "group_buy": "Aggregate demand for inputs to lower costs by 15%."
+  },
+  "privacy": {
+    "consent": "Data used strictly for agronomy advice. No sale to 3rd parties without explicit opt-in.",
+    "governance": "GDPR/Kenya Data Protection Act compliant."
+  },
+  "hackathon_plan": {
+    "roles": {
+      "frontend": "Build Market & Report React components",
+      "backend": "Mock API endpoints & DB schema",
+      "data": "Source Kenya market price CSVs"
+    },
+    "timeline": "Day 1: UI Skeleton. Day 2: Integration & Mock Data. Day 3: Polish & Pitch."
+  },
+  "mvp_roadmap": {
+    "month_1": "Pilot in 1 county (Machakos). Manual price updates.",
+    "month_2": "Expand to 3 counties. Automated SMS alerts.",
+    "month_3": "Full ML integration for yield forecasting."
+  },
+  "deliverables_for_judges": [
+    "One-pager PDF",
+    "Live Demo Link",
+    "GitHub Repo",
+    "Impact Projection Slide"
+  ],
+  "appendix": {
+    "example_report_output": {
+      "farmer": "Jane W.",
+      "week": "Nov 20-26, 2025",
+      "yield_forecast": "2.1 tons (Maize)",
+      "input_efficiency": "Good",
+      "market_insight": "Maize prices in Machakos are rising (KES 4500). Consider holding for 2 weeks.",
+      "actions": ["Scout for leaf holes", "Ensure irrigation if rain fails"]
+    }
+  }
+}
